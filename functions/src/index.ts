@@ -1,9 +1,21 @@
-import * as functions from "firebase-functions";
+import * as functions from 'firebase-functions';
+import * as admin from 'firebase-admin';
 
-// // Start writing Firebase Functions
-// // https://firebase.google.com/docs/functions/typescript
-//
-// export const helloWorld = functions.https.onRequest((request, response) => {
-//   functions.logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+admin.initializeApp();
+
+export const getBostonWeeather = functions.https.onRequest(
+  (request, response) => {
+    admin
+      .firestore()
+      .doc('cities-weather/boston-ma-use')
+      .get()
+      .then((snap) => {
+        const data = snap.data();
+        response.send(data);
+      })
+      .catch((error) => {
+        console.error(error);
+        response.status(500).send(error);
+      });
+  },
+);
